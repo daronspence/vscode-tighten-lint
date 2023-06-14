@@ -9,6 +9,14 @@ A VScode linter for [Tighten Lint](https://github.com/tightenco/tlint)
 * `CTRL` + `SHIFT` + `X` (`View: show extensions`)
 * Search for tighten lint and click install
 
+### Manual Installation
+
+```sh
+# In Root of Project
+vsce package
+code --install-extension path-of.vsix
+```
+
 ## Features
 
 * Customisable linter severities
@@ -23,22 +31,22 @@ You must install the linter executable as per the [tlint](https://github.com/tig
 
 | setting                        | default | description                                                                                           |
 |--------------------------------|---------|-------------------------------------------------------------------------------------------------------|
-| `tighten-lint.exec`            | `tlint` | The `tlint` executable path                                                                           |
-| `tighten-lint.defaultSeverity` | `error` | The default violation severity (error, warning, info, hint)                                           |
-| `tighten-lint.severities`      | `{}`    | Override default severity for specific [linter](https://github.com/tightenco/tlint#available-linters) |
-| `tighten-lint.only`            | `[]`    | A list of the specific linters to run                                                                 |
+| `tlint-with-syntax.exec`            | `tlint` | The `tlint` executable path                                                                           |
+| `tlint-with-syntax.defaultSeverity` | `error` | The default violation severity (error, warning, info, hint)                                           |
+| `tlint-with-syntax.severities`      | `{}`    | Override default severity for specific [linter](https://github.com/tightenco/tlint#available-linters) |
+| `tlint-with-syntax.only`            | `[]`    | A list of the specific linters to run                                                                 |
 
 ### Example Configuration
 
 ```json
-"tighten-lint.exec": "/usr/bin/tlint",
-    "tighten-lint.defaultSeverity": "warning",
-    "tighten-lint.only": [
+"tlint-with-syntax.exec": "/usr/bin/tlint",
+    "tlint-with-syntax.defaultSeverity": "warning",
+    "tlint-with-syntax.only": [
         "AlphabeticalImports",
         "NoInlineVarDocs",
         "ImportFacades"
     ],
-    "tighten-lint.severities": {
+    "tlint-with-syntax.severities": {
         "NoInlineVarDocs": "info"
     },
 ```

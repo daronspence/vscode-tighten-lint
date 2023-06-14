@@ -11,8 +11,8 @@ export default class LintProvider {
 
     public constructor() {
         this.diagnostics = vscode.languages.createDiagnosticCollection();
-        this.config = vscode.workspace.getConfiguration("tighten-lint");
-        this.outputChannel = vscode.window.createOutputChannel('Tighten Lint');
+        this.config = vscode.workspace.getConfiguration("tlint-with-syntax");
+        this.outputChannel = vscode.window.createOutputChannel('TLint with Syntax');
     }
 
     public activate(subscriptions: vscode.Disposable[]) {
@@ -50,10 +50,10 @@ export default class LintProvider {
         if (textDocument.uri.scheme !== "file") {
             return;
         }
-        if (textDocument.languageId !== "php") {
+        if (!["php", "blade"].includes(textDocument.languageId)) {
             return;
         }
-        this.config = vscode.workspace.getConfiguration("tighten-lint");
+        this.config = vscode.workspace.getConfiguration("tlint-with-syntax");
 
         let command: string = this.config.exec + ' lint --json ' + this.getIncludedPolicies() + ' "' + textDocument.fileName + '"';
         let cwd: string = vscode.workspace.workspaceFolders[0].uri.fsPath;
@@ -77,9 +77,18 @@ export default class LintProvider {
 
     private getDiagnostics(decoded: string): vscode.Diagnostic[] {
         let diagnostics: vscode.Diagnostic[] = [];
+        let extraErrors = [];
 
         if (!this.IsJsonString(decoded)) {
-            return diagnostics;
+            extraErrors = this.parseSyntaxError(decoded);
+            if (extraErrors.length) {
+                decoded = JSON.stringify({
+                    errors: extraErrors,
+                })
+            } else {
+                vscode.window.showErrorMessage('Error parsing linted file.');
+                return diagnostics;
+            }
         }
         let errors = JSON.parse(decoded);
 
@@ -89,7 +98,7 @@ export default class LintProvider {
                     new vscode.Position(element.line - 1, 0),
                     new vscode.Position(element.line - 1, Number.MAX_VALUE)
                 ),
-                `tighten-lint: ${element.message} (${element.source})`,
+                `TLint: ${element.message} (${element.source})`,
                 this.getSeverity(element.source)
             ));
         });
@@ -128,5 +137,27 @@ export default class LintProvider {
             return false;
         }
         return true;
+    }
+
+    private parseSyntaxError(str: string): Array<any> {
+        const lines = str.split("\n");
+        let syntaxError = '';
+        let lineNumber = null;
+        const errors = [];
+
+        if (lines[2].toLowerCase().includes('syntax error')) {
+            const regex = /^(\d+) /;
+            syntaxError = lines[2];
+            lineNumber = Number(lines[3].match(regex)[1] || 1);
+
+            errors.push({
+                message: syntaxError,
+                line: lineNumber,
+                source: str,
+            })
+        }
+
+        this.outputChannel.appendLine(JSON.stringify(lines));
+        return errors;
     }
 }

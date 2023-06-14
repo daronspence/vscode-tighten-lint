@@ -1,14 +1,14 @@
 {
-  "name": "tighten-lint",
-  "displayName": "tighten-lint",
-  "description": "Tighten linter for Laravel conventions",
+  "name": "tlint-with-syntax",
+  "displayName": "tlint-with-syntax",
+  "description": "Tighten linter with basic syntax checking for Laravel conventions",
   "repository": {
-    "url": "https://github.com/d9705996/vscode-tighten-lint"
+    "url": "https://github.com/daronspence/vscode-tighten-lint"
   },
-  "publisher": "d9705996",
+  "publisher": "Daron Spence",
   "icon": "images/logo.png",
   "license": "MIT",
-  "version": "0.1.1",
+  "version": "0.0.1",
   "engines": {
     "vscode": "^1.37.0"
   },
@@ -18,23 +18,27 @@
   "keywords": [
     "Tighten",
     "PHP",
-    "Laravel"
+    "Laravel",
+    "Syntax",
+    "Lint",
+    "Blade"
   ],
   "activationEvents": [
-    "onLanguage:php"
+    "onLanguage:php",
+    "onLanguage:blade"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "configuration": {
-      "title": "tighten-lint",
+      "title": "tlint-with-syntax",
       "properties": {
-        "tighten-lint.exec": {
+        "tlint-with-syntax.exec": {
           "type": "string",
           "default": "tlint",
           "description": "tlint executable",
           "scope": "window"
         },
-        "tighten-lint.defaultSeverity": {
+        "tlint-with-syntax.defaultSeverity": {
           "type": "string",
           "enum": [
             "error",
@@ -46,13 +50,13 @@
           "description": "Severity of violations",
           "scope": "window"
         },
-        "tighten-lint.severities": {
+        "tlint-with-syntax.severities": {
           "type": "object",
           "default": {},
           "description": "Source to severity mappings",
           "scope": "window"
         },
-        "tighten-lint.only": {
+        "tlint-with-syntax.only": {
           "type": "array",
           "default": [],
           "description": "Policies to include",
